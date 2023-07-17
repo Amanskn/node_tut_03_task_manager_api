@@ -1,7 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
 const port = 8000;
+
+// ========Requiring the connect.js file to establish the connection to the database
+require("./db/connect");
 
 app.use(express.static(path.join(__dirname, "/public")));
 
