@@ -1,11 +1,25 @@
+const Task = require("../models/Task");
+// ==========A simple check
+// console.log("Task in controller:-", typeof Task);
+
 //====================================== Get all the tasks from the database
 module.exports.getAllTasks = function (req, res) {
   return res.send("Get All tasks");
 };
 
 // ==========================================Creating a  single task in the database
-module.exports.createTask = function (req, res) {
-  return res.send("Create a task");
+module.exports.createTask = async function (req, res) {
+  try {
+    const newTask = await Task.create(req.body);
+    return res.status(201).json({
+      newTask,
+    });
+  } catch (error) {
+    console.log("Error in creation of task:-", error);
+    return res.status(500).json({
+      error,
+    });
+  }
 };
 
 // =========================Get a single task
@@ -24,3 +38,5 @@ module.exports.deleteTask = function (req, res) {
 };
 
 // console.log("========inside task controller:---", module.exports);
+
+// console.log("Controller ran");
