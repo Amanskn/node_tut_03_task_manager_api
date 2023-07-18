@@ -3,8 +3,20 @@ const Task = require("../models/Task");
 // console.log("Task in controller:-", typeof Task);
 
 //====================================== Get all the tasks from the database
-module.exports.getAllTasks = function (req, res) {
-  return res.send("Get All tasks");
+module.exports.getAllTasks = async function (req, res) {
+  try {
+    const tasks = await Task.find().exec();
+    const tasksCount = tasks.length;
+    return res.status(200).json({
+      tasksCount,
+      tasks,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error,
+    });
+  }
 };
 
 // ==========================================Creating a  single task in the database
@@ -15,7 +27,8 @@ module.exports.createTask = async function (req, res) {
       newTask,
     });
   } catch (error) {
-    console.log("Error in creation of task:-", error);
+    console.log("first", error);
+
     return res.status(500).json({
       error,
     });
