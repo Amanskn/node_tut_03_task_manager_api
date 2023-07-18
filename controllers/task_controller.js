@@ -51,7 +51,7 @@ module.exports.getSingleTask = async function (req, res) {
 
     const convertedTaskID = new mongoose.Types.ObjectId(taskID);
 
-    console.log("This is the id value received---", convertedTaskID);
+    // console.log("This is the id value received---", convertedTaskID);
 
     const task = await Task.findOne({ _id: convertedTaskID });
     if (!task) {
@@ -68,8 +68,30 @@ module.exports.getSingleTask = async function (req, res) {
 };
 
 // ============================Update a particular task
-module.exports.updateTask = function (req, res) {
-  return res.send("update a single task");
+module.exports.updateTask = async function (req, res) {
+  try {
+    const { id } = req.params;
+    const taskID = new mongoose.Types.ObjectId(id);
+    const oldTask = await Task.findOneAndUpdate({ _id: taskID }, req.body, {
+      returnOriginal: true, // or new:false
+      // returnOriginal: false, // or new:true,
+      // ========To enforce the validation check
+      runValidators: true,
+    });
+    if (!oldTask) {
+      return res.status(404).json({
+        msg: `No task found with the id:- ${taskID}, hence no updation can be done`,
+      });
+    }
+    return res.status(200).json({
+      oldTask,
+    });
+  } catch (error) {
+    console.log("Error in updating the task:-" + error);
+    return res.status(500).json({
+      error,
+    });
+  }
 };
 
 // =======================Delete a task
@@ -88,7 +110,12 @@ module.exports.deleteTask = async function (req, res) {
       });
     }
   } catch (error) {
-    console.log("Error in deleting the task:-", error);
+    // console.log("Error in deleting the task:-", error);
+
+    // =============== printing the error using +. Why? Ans:- to convert the error object
+    // ================= into string (basically JavaScript is internally calling the toString() because of type coercion)
+    // ==================so that only necessary error message gets printed on the console not the whole object
+    console.log("Error in deleting the task:-" + error);
     return res.status(500).json({
       error,
     });
