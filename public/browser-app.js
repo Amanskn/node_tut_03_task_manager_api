@@ -50,7 +50,7 @@ showTasks();
 
 tasksDOM.addEventListener("click", async (e) => {
   // console.log("Clicked123");
-  // const el = e.target;
+  const el = e.target;
   // console.log("el", el);
   // console.log("El.parent", el.parentElement);
   // console.log("Contains:_", el.parentElement.classList.contains("delete-btn"));

@@ -5,7 +5,7 @@ const path = require("path");
 const port = 8000;
 
 // ========Requiring the connect.js file to establish the connection to the database
-require("./db/connect");
+const DB = require("./db/connect");
 
 app.use(express.static(path.join(__dirname, "/public")));
 
@@ -21,7 +21,11 @@ app.get("/", (req, res) => {
 // console.log("2------", __dirname + "//public");
 app.use("/api/v1/tasks", require("./routes/tasks.js"));
 
-app.listen(port, (err) => {
-  if (err) console.log("Error in running the server");
-  console.log("Server is running on port:-", port);
-});
+const server = async () => {
+  await DB();
+  app.listen(port, (err) => {
+    if (err) console.log("Error in running the server");
+    console.log("Server is running on port:-", port);
+  });
+};
+server();
