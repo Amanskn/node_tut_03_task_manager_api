@@ -25,7 +25,8 @@ module.exports.createTask = asyncWrapper(async function (req, res) {
 });
 
 // =========================Get a single task
-module.exports.getSingleTask = asyncWrapper(async function (req, res) {
+module.exports.getSingleTask = asyncWrapper(async function (req, res, next) {
+  console.log("Inside getsingle task controller");
   const { id: taskID } = req.params;
   // ================ this conversion is necessary. Why?
   //=============  See,  Mongoose will automatically perform the conversion from string to ObjectId internally when querying the database iff the string is a valid ObjectId.
@@ -42,9 +43,17 @@ module.exports.getSingleTask = asyncWrapper(async function (req, res) {
 
   const task = await Task.findOne({ _id: convertedTaskID });
   if (!task) {
-    return res.status(404).json({
-      msg: `No task found with the id:- ${convertedTaskID}`,
-    });
+    const error = new Error("Task Not found");
+    // console.log("error object at line 46:---", error);
+    error.status = 404;
+    // console.log("error object at line 48:---", error);
+    console.log("before next");
+    // ========Always write return before next()
+    return next(error);
+    console.log("after next");
+    // return res.status(404).json({
+    //   msg: `No task found with the id:- ${convertedTaskID}`,
+    // });
   }
 
   return res.status(200).json({ task });

@@ -21,17 +21,19 @@ app.get("/hello", (req, res) => {
   return res.send("hello world by Aman");
 });
 
+app.use((req, res, next) => {
+  console.log("MiddlewareAman 1 called");
+  // =========This is for checking purpose that we can send response from the middleware also
+  // return res.send("Go back");
+
+  next();
+});
+
 // console.log("1------", path.join(__dirname, "public"));
 // console.log("2------", __dirname + "//public");
 app.use("/api/v1/tasks", require("./routes/tasks.js"));
 
 // =============Please note that the order of the middleware also matters, meaning:- middlware1 will be called only for routes other
-// app.use((req, res, next) => {
-//   console.log("Middleware 1 called");
-//   // =========This is for checking purpose that we can send response from the middleware also
-//   // return res.send("Go back");
-//   next();
-// });
 
 // app.all("*", (req, res, next) => {
 // ============ either Return your custom response or pass the flow to the expressJS's default error handler
